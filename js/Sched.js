@@ -73,7 +73,6 @@ const Sched = function () {
     this.paintStation = (station) => {
         let rad = 0.3;
         let col = this.getColor(station) + '80';
-
         if (station.dateFrom <= this.date) {
             let p = this.getXYLatlon(station);
             let mag = gui.getLayer().mag;
@@ -98,13 +97,12 @@ const Sched = function () {
             }
             lastLatlon = latlon;
         });
-
         railways.routes.forEach(route => {
             let rtcolor = this.getColor(route);
             let p0 = this.getXYLatlon(railways.stations.find(s => s.id === route.from));
             route.line.forEach(latlon => {
                 let p1 = this.getXYLatlon(latlon);
-                gui.line( {p0: p0, p1: p1}, rtcolor, 2);
+                gui.line({p0: p0, p1: p1}, rtcolor, 2);
                 p0 = p1;
             });
             let p1 = this.getXYLatlon(railways.stations.find(s => s.id === route.to));
@@ -113,7 +111,9 @@ const Sched = function () {
         railways.stations.forEach(station => {
             this.paintStation(station);
         });
-
+        gui.layer.ctx.font='20px Arial';
+        gui.layer.ctx.fillStyle='#C0C0C0';
+        gui.layer.ctx.fillText('Historical Map of Hungarian Railways',16,80);
     };
 
     this.calculate = () => {
