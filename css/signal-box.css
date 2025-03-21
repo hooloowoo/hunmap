@@ -1,0 +1,31 @@
+body {
+    background: #202028 linear-gradient(-45deg, #202028 0%, #000008 100%);
+    font-family: 'DejaVu Sans', Arial, Helvetica, sans-serif;
+    letter-spacing: 1px;
+    font-size: 16px;
+    margin : 0;
+    padding: 0;
+    display: block;
+    height: 100%;
+    overflow: hidden;
+}
+
+canvas {
+    touch-action: none;
+    overflow: hidden;
+    position: relative;
+    top: 0;
+    left: 0;
+}
+
+div#layout {
+    overflow: hidden;
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background-color: #202422;
+    display: inline-block;
+    margin: 0;
+    padding: 0;
+}
+

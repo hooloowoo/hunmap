@@ -1,0 +1,120 @@
+div#tools {
+    width: 100%;
+    padding-left: 5px;
+    position: absolute;
+    background-color: #28303860;
+    border-bottom: 1px solid #58585880;
+}
+
+::-webkit-calendar-picker-indicator {
+    filter: invert(1);
+}
+
+div#toolbar {
+    width: 100%;
+}
+
+div#toolbar .date-pane {
+    margin: 6px 8px 4px 4px;
+    font-size: 200%;
+    background-color: #28303800;
+    text-decoration: none;
+    color: #C0FFFF;
+    height: 1.2em;
+    width: 6em;
+    display: inline-block;
+    text-align: center;
+    position: relative;
+    cursor: pointer;
+}
+
+div#toolbar .id-title {
+    display: inline-block;
+    background-color: #28303800;
+    margin: 0;
+    border: none;
+    position: absolute;
+    top: 2px;
+    left: 4px;
+    font-size: 10px;
+}
+
+div#toolbar .user-pane {
+    margin: 6px 8px 4px 4px;
+    font-size: 200%;
+    min-width: 2em;
+    background-color: #28303800;
+    text-decoration: none;
+    color: #C0FFFF;
+    height: 1.2em;
+    display: inline-block;
+    overflow: hidden;
+    text-align: center;
+    position: relative;
+    cursor: pointer;
+}
+
+div#toolbar .user-text {
+    background-color: #28303800;
+    display: inline-block;
+    height: 17px;
+    border: none;
+    top: 0.4em;
+    left: 4px;
+    text-align: left;
+    padding-left: 0.3em;
+    color: #C0FFFF;
+    font-size: 18px;
+}
+
+div#toolbar .id-pane {
+    margin: 6px 8px 4px 4px;
+    font-size: 200%;
+    min-width: 5em;
+    background-color: #28303800;
+    text-decoration: none;
+    color: #C0FFFF;
+    height: 1.2em;
+    display: inline-block;
+    overflow: hidden;
+    text-align: center;
+    position: relative;
+    cursor: pointer;
+}
+
+
+input.toolbar {
+    display: inline-block;
+    position: absolute;
+    height: 1em;
+    bottom: 4px;
+    left: 3%;
+    background: transparent;
+    border: none;
+    color: #C0FFFF;
+    font-size: 18px;
+}
+
+#toolbar div.button-link {
+    margin: 4px;
+    font-size: 70%;
+    border: 1px solid #585858;
+    background-color: #283038;
+    text-decoration: none;
+    color: #E0E0E0;
+    width: 36px;
+    height: 36px;
+    display: inline-block;
+    overflow: hidden;
+    text-align: center;
+    position: relative;
+    cursor: pointer;
+}
+
+#toolbar div.button-text {
+    position: relative;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+

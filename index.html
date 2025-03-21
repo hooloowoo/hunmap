@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Historical map of Hungarian Railways</title>
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no, width=device-width" />
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+    <meta charset="utf-8">
+    <link rel="manifest" href="manifest.json">
+    <link rel="icon" href="favicon.ico">
+    <link href="css/toolbar.css" rel="stylesheet">
+    <link href="css/signal-box.css" rel="stylesheet">
+</head>
+<body>
+    <script type="module">
+        import {sched} from './js/Sched.js';
+        sched.init();
+    </script>
+    <div id="layout"></div>
+    <div id="tools"></div>
+</body>
+</html>
