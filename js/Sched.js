@@ -150,8 +150,12 @@ const Sched = function () {
             let m = parseInt((this.date % 10000)/100);
             let d = parseInt(this.date % 100);
             let now = new Date();
-            if (!(y > now.getFullYear() || (y === now.getFullYear() && m > now.getMonth()) || (y === now.getFullYear() && m === now.getMonth() && d > now.getDate()))) {
+            let today = parseInt(`${now.getFullYear()}${String(now.getMonth() + 1).padStart(2, '0')}${String(now.getDate()).padStart(2, '0')}`, 10);
+            if (this.date < today) {
                 this.date += 200;
+            }
+            if (this.date > today) {
+                this.date = today;
             }
             if ((this.date % 10000) > 1231) {
                 this.date = parseInt(this.date/10000)*10000 + 10100 + (this.date % 100);
