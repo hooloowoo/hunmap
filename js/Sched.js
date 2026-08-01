@@ -202,14 +202,20 @@ const Sched = function () {
 
     this.getStationColor = (s) => {
         var allRoutes = railways.routes
-            .filter(route => route.from === s.id || route.to === s.id)
-            .sort((a, b) => a.dateFrom - b.dateFrom);
-        let dt = this.getRouteDate(allRoutes);
+            .filter(route => route.from === s.id || route.to === s.id);
         let col = '#203030';
-        if (dt.dateTo < this.date) col = '#904040';
-        else {
-            if (dt.dateFrom <= this.date) col = '#E0E0E0';
-        }
+        allRoutes.forEach(route => {
+            if (route.dateFrom <= this.date) {
+                if (route.dateTo < this.date) {
+                    if (col !== '#E0E0E0') 
+                    col = '#904040';
+                }
+                else {
+                    if (route.dateFrom <= this.date) col = '#E0E0E0';
+                }
+            }
+        });
+
         return col;
     }
 
