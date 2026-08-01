@@ -3561,6 +3561,11 @@ let railways =  {
         {from: 'TUJVR', to: 'TPERO',dateFrom:19550101,dateTo:20131214,line: []},
 
 
+        {from: 'NYEKL', to: 'HJKER',dateFrom:20260901,dateTo:20991231,line: []},
+        {from: 'HJKER', to: 'NACSE',dateFrom:20260901,dateTo:20991231,line: []},
+        {from: 'NACSE', to: 'SJSZD',dateFrom:20260901,dateTo:20991231,line: []},
+        {from: 'SJSZD', to: 'TUJVR',dateFrom:20260901,dateTo:20991231,line: []},        
+
         {from: 'GRGSZ', to: 'BASHA',dateFrom:18961026,dateTo:20991231,line: []},
         {from: 'BASHA', to: 'TAESZ',dateFrom:18961026,dateTo:20991231,line: []},
         {from: 'TAESZ', to: 'KFSTA',dateFrom:18961026,dateTo:20991231,line: []},
