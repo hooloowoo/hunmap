@@ -3,15 +3,39 @@ import {hidHandler} from "./util/HidHandler.js";
 import {gui} from "./util/Gui.js";
 import {hunborder} from "../data/hunborder.js";
 import {railways} from "../data/railways.js";
+import {timetables} from "../data/timetables.js";
 
 const Sched = function () {
 
     this.container = document.getElementById('layout');
     this.delta=0;
-    this.autoTime = true;
+    this.autoDate = true;
+    this.autoTime = false;
     this.date = 18460715;
+    this.time = 1200;
+    this.stationById = new Map();
+    this.stationPointById = new Map();
+    this.projectedPointCache = new Map();
+
+    this.getActualDate = () => {
+        const now = new Date();
+        return parseInt(`${now.getFullYear()}${String(now.getMonth() + 1).padStart(2, '0')}${String(now.getDate()).padStart(2, '0')}`, 10);
+    }
+
+    this.toMinutes = (hhmm) => {
+        return (Math.trunc(hhmm / 100) * 60) + (hhmm % 100);
+    }
+
+    this.getStationById = (id) => {
+        return this.stationById.get(id);
+    }
 
     this.getXYLatlon = (latlon) => {
+        const key = `${latlon.lat}|${latlon.lon}`;
+        const cached = this.projectedPointCache.get(key);
+        if (cached) {
+            return cached;
+        }
         let lat = latlon.lat+10;
         let lon = latlon.lon-19;
         let latRad = (lat) * (Math.PI)/180;
@@ -19,7 +43,9 @@ const Sched = function () {
         let earthRadius = 6367;
         let posX = earthRadius * Math.cos(latRad) * Math.sin(lonRad);
         let posY = earthRadius * Math.cos(latRad) * Math.cos(lonRad);
-        return {x: posX, y: posY};
+        const p = {x: posX, y: posY};
+        this.projectedPointCache.set(key, p);
+        return p;
     }
 
     this.resize = () => {
@@ -30,7 +56,7 @@ const Sched = function () {
         let tl = null;
         let br = null;
         railways.stations.forEach(station => {
-            let p = this.getXYLatlon(station);
+            let p = this.stationPointById.get(station.id) || this.getXYLatlon(station);
             if (br === null) br = {x:p.x,y:p.y};
             if (tl === null) tl = {x:p.x,y:p.y};
             if (br.x < p.x) br.x = p.x;
@@ -44,41 +70,169 @@ const Sched = function () {
         this.repaint();
     }
 
+    this.calcDeg = (l) => {
+        let dx=l.p1.x-l.p0.x;
+        let dy=l.p1.y-l.p0.y;
+        if ((dx === 0) && (dy === 0)) return;
+        if (dx === 0) {
+            if (dy < 0) return 0;
+            if (dy > 0) return 180;
+        }
+        if (dy === 0) {
+            if (dx < 0) return 270;
+            if (dx > 0) return 90;
+        }
+        let dd=dy/dx;
+        let deg=(Math.atan(dd)*180/Math.PI);
+        deg=deg+90;
+        if (dx < 0) deg=180+deg;
+        return deg;
+    }
+
+    this.calcLen = (l) => {
+        let res=0;
+        let dx=Math.abs(l.p1.x-l.p0.x);
+        let dy=Math.abs(l.p1.y-l.p0.y);
+        res=Math.sqrt((dx*dx)+(dy*dy));
+        return res;
+    }
+
+    this.nextPoint = (p,len,deg) => {
+        var dr=Math.PI/180;
+        var adeg=((deg+90)%360);
+        var dx=len*Math.sin(adeg*dr);
+        var dy=-len*Math.cos(adeg*dr);
+        return {x : p.x+dy, y: p.y-dx};
+    }
+/*
+    this.checkDate = (cal) => {
+        let dates = timetables.calendar[cal];
+        return dates.some(date => date.from <= this.date && date.to >= this.date);
+    }
+
+    this.paintTrains = () => {
+        timetables.lines.forEach(line => {
+            if (this.checkDate(line.calendar)) {
+                line.sched.forEach(sch => {
+                    if (sch.timeFrom <= this.time && sch.timeTo >= this.time) {
+                        let st0 = this.getStationById(sch.from);
+                        let st1 = this.getStationById(sch.to);
+                        if (st0 && st1) {
+                            let p0 = this.stationPointById.get(st0.id);
+                            let p1 = this.stationPointById.get(st1.id);
+                            let l = this.calcLen({p0: p0, p1: p1});
+                            let deg = this.calcDeg({p0: p0, p1: p1});
+
+                            let fmins = this.toMinutes(sch.timeFrom);
+                            let tmins = this.toMinutes(sch.timeTo);
+                            let mins = this.toMinutes(this.time);
+
+                            let len = l * (mins - fmins) / (tmins - fmins);
+                            let p = this.nextPoint(p0,len,deg);
+                            let col = '#FF0000';
+                            gui.circle(p, 0.4, col, col);
+                            gui.drawFloatText(line.nr ,
+                                {p0: {x: p.x - 10, y: p.y - 5}, p1: {x: p.x + 10, y: p.y + 5}}, col, null,
+                                1, 0);
+
+                        }
+                    }
+                });
+
+            }
+        });
+    }
+*/
+
     this.repaintTimer = () => {
-        if (this.autoTime) {
+        if (this.autoDate) {
             let y = parseInt(this.date/10000);
             let m = parseInt((this.date % 10000)/100);
             let d = parseInt(this.date % 100);
             let now = new Date();
             if (!(y > now.getFullYear() || (y === now.getFullYear() && m > now.getMonth()) || (y === now.getFullYear() && m === now.getMonth() && d > now.getDate()))) {
-                this.date += 100;
+                this.date += 200;
             }
             if ((this.date % 10000) > 1231) {
                 this.date = parseInt(this.date/10000)*10000 + 10100 + (this.date % 100);
             }
             this.setDateControl();
             this.repaint();
+        } else {
+            if (this.autoTime) {
+                this.time += 1;
+                if (this.time % 100 >= 60) {
+                    this.time = this.time + 40;
+                }
+                if (this.time >= 2400) {
+                    this.time = 0;
+                }
+                this.setTimeControl();
+                this.repaint();
+            }
+//            this.paintTrains();
         }
+    }
+
+
+
+    this.getRouteDate = (rts) => {
+        let dt = {dateFrom: 30000101, dateTo: 30000101};
+        rts.forEach(route => {
+            if (route.dateFrom <= this.date) {
+                dt={dateFrom: route.dateFrom, dateTo: route.dateTo};
+            }
+        });
+        return dt;
+    }
+
+    this.getRouteColor = (o) => {
+        var allRoutes = railways.routes
+            .filter(route => route.from === o.from && route.to === o.to)
+            .sort((a, b) => a.dateFrom - b.dateFrom);
+        let dt = this.getRouteDate(allRoutes);
+        let col = '#203030';
+        if (dt.dateTo < this.date) col = '#904040';
+        else {
+            if (dt.dateFrom <= this.date) col = '#E0E0E0';
+        }
+        return col;
+    }
+
+
+    this.getStationColor = (s) => {
+        var allRoutes = railways.routes
+            .filter(route => route.from === s.id || route.to === s.id)
+            .sort((a, b) => a.dateFrom - b.dateFrom);
+        let dt = this.getRouteDate(allRoutes);
+        let col = '#203030';
+        if (dt.dateTo < this.date) col = '#904040';
+        else {
+            if (dt.dateFrom <= this.date) col = '#E0E0E0';
+        }
+        return col;
     }
 
     this.getColor = (o) => {
         let col = '#E0E0E0'
         if (o.dateTo < this.date) col = '#904040';
         else {
-            if (o.dateFrom > this.date) col = '#203030';
+            if (o.dateFrom >= this.date) col = '#203030';
         }
         return col;
     }
 
     this.paintStation = (station) => {
         let rad = 0.3;
-        let col = this.getColor(station) + '80';
-        if (station.dateFrom <= this.date) {
+
+        let col = this.getStationColor(station) ;
+        if (col !== '#203030') {
+
             let p = this.getXYLatlon(station);
             let mag = gui.getLayer().mag;
             gui.circle(p, mag > 10 ? rad * 15 / mag : rad, col, col);
             if (mag > 10 || station.weight !== 2) {
-                let fontSize = station.weight === 2 ? 1 : 3;
+                let fontSize = station.weight === 2 ? 1 : 2;
                 gui.drawFloatText(station.name ,
                     {p0: {x: p.x - 10, y: p.y - 5}, p1: {x: p.x + 10, y: p.y + 5}}, col, null,
                     mag > 12 ? fontSize * 15 / mag : fontSize, 0);
@@ -98,14 +252,16 @@ const Sched = function () {
             lastLatlon = latlon;
         });
         railways.routes.forEach(route => {
-            let rtcolor = this.getColor(route);
-            let p0 = this.getXYLatlon(railways.stations.find(s => s.id === route.from));
+
+            let rtcolor = this.getRouteColor(route);
+            
+            let p0 = this.stationPointById.get(route.from);
             route.line.forEach(latlon => {
                 let p1 = this.getXYLatlon(latlon);
                 gui.line({p0: p0, p1: p1}, rtcolor, 2);
                 p0 = p1;
             });
-            let p1 = this.getXYLatlon(railways.stations.find(s => s.id === route.to));
+            let p1 = this.stationPointById.get(route.to);
             gui.line({p0: p0, p1: p1}, rtcolor, 2);
         });
         railways.stations.forEach(station => {
@@ -117,20 +273,30 @@ const Sched = function () {
     };
 
     this.calculate = () => {
+        this.stationById.clear();
+        this.stationPointById.clear();
+        railways.stations.forEach(station => {
+            this.stationById.set(station.id, station);
+            this.stationPointById.set(station.id, this.getXYLatlon(station));
+        });
+
+        const seenRoutes = new Set();
         railways.routes.forEach(route => {
-            let st0 = railways.stations.find(s => s.id === route.from);
+            const routeKey = `${route.from}-${route.to}`;
+            if (seenRoutes.has(routeKey)) return;
+            seenRoutes.add(routeKey);
+
+            let st0 = this.getStationById(route.from);
             if (st0) {
                 if (!st0.weight) st0.weight = 1;
                 else st0.weight++;
-                if (!st0.dateFrom || st0.dateFrom > route.dateFrom) st0.dateFrom = route.dateFrom;
-                if (!st0.dateTo || st0.dateTo < route.dateTo) st0.dateTo = route.dateTo;
+
             }
-            let st1 = railways.stations.find(s => s.id === route.to);
+            let st1 = this.getStationById(route.to);
             if (st1) {
                 if (!st1.weight) st1.weight = 1;
                 else st1.weight++;
-                if (!st1.dateFrom || st1.dateFrom > route.dateFrom) st1.dateFrom = route.dateFrom;
-                if (!st1.dateTo || st1.dateTo < route.dateTo) st1.dateTo = route.dateTo;
+
             }
         });
     }
@@ -142,6 +308,13 @@ const Sched = function () {
         document.getElementById('date').value = y + '-' + (m.length === 1 ? '0' : '') + m + '-' + (d.length === 1 ? '0' : '') + d;
     }
 
+    this.setTimeControl = () => {
+        let h = '' + parseInt(this.time/100);
+        let m = '' + parseInt(this.time % 100);
+        let s = (h.length === 1 ? '0' : '') + h + ':' + (m.length === 1 ? '0' : '') + m;
+        document.getElementById('time').value = s;
+    }
+
     this.init = () => {
         toolBar.init(document.getElementById('tools'),()=>{});
         this.calculate();
@@ -150,25 +323,48 @@ const Sched = function () {
         window.onresize =  this.resize;
         toolBar.reset();
 
-        toolBar.addDateFrame('date','date',(d) =>{
-            this.date = parseInt(d.substring(0,4)+d.substring(5,7)+d.substring(8,10));
-            this.repaint();
-        });
-
         toolBar.toolbarButton('fit','fit',() => {
             this.resize();
             this.repaint();
         });
 
+        toolBar.addDateFrame('date','date',(d) =>{
+            this.date = parseInt(d.substring(0,4)+d.substring(5,7)+d.substring(8,10));
+            this.repaint();
+        });
+
+
         toolBar.toolbarButton('yearBegin','|<',() => {
             this.date = 18460715;
+
+            this.autoDate = true;
+            document.getElementById('yearForward').style.display = 'none';
+            document.getElementById('yearBackward').style.display = 'none';
+
             this.setDateControl();
             this.repaint();
         });
+
+        toolBar.toolbarButton('yearEnd','yearEnd',() => {
+            this.date = this.getActualDate();
+            this.autoDate = false;
+            document.getElementById('yearForward').style.display =  'inline-block';
+            document.getElementById('yearBackward').style.display =  'inline-block';
+
+            this.setDateControl();
+            this.repaint();
+        });
+
         toolBar.toolbarButton('pause','||',() => {
-            this.autoTime = !this.autoTime;
-            document.getElementById('yearForward').style.display = this.autoTime ? 'none' : 'inline-block';
-            document.getElementById('yearBackward').style.display = this.autoTime ? 'none' : 'inline-block';
+            this.autoDate = !this.autoDate;
+            document.getElementById('yearForward').style.display = this.autoDate ? 'none' : 'inline-block';
+            document.getElementById('yearBackward').style.display = this.autoDate ? 'none' : 'inline-block';
+//            document.getElementById('frame_time').style.display = this.autoDate ? 'none' : 'inline-block';
+//            document.getElementById('pauseTime').style.display = this.autoDate ? 'none' : 'inline-block';
+//            document.getElementById('timeBackward').style.display = this.autoDate || this.autoTime ? 'none' : 'inline-block';
+//            document.getElementById('timeForward').style.display = this.autoDate || this.autoTime ? 'none' : 'inline-block';
+//            document.getElementById('timeFastBackward').style.display = this.autoDate || this.autoTime ? 'none' : 'inline-block';
+//            document.getElementById('timeFastForward').style.display = this.autoDate || this.autoTime ? 'none' : 'inline-block';
             this.repaint();
         });
         toolBar.toolbarButton('yearBackward','<<',() => {
@@ -181,16 +377,62 @@ const Sched = function () {
             this.setDateControl();
             this.repaint();
         }).style.display = 'none';
+
+
+/*
+
+        toolBar.addTimeFrame('time','time',(d) =>{
+            this.time = parseInt(d.substring(0,2)+d.substring(3,5));
+            this.repaint();
+        }).style.display = 'none';
+
+
+        toolBar.toolbarButton('pauseTime','||',() => {
+            this.autoTime = !this.autoTime;
+            document.getElementById('timeForward').style.display = this.autoTime ? 'none' : 'inline-block';
+            document.getElementById('timeBackward').style.display = this.autoTime ? 'none' : 'inline-block';
+            document.getElementById('timeFastBackward').style.display = this.autoTime ? 'none' : 'inline-block';
+            document.getElementById('timeFastForward').style.display = this.autoTime ? 'none' : 'inline-block';
+            this.repaint();
+        }).style.display = 'none';
+
+        toolBar.toolbarButton('timeFastBackward','<<',() => {
+            this.time = this.time - 100;
+            if (this.time < 0) this.time = 2400 + this.time;
+            this.setTimeControl();
+            this.repaint();
+        }).style.display = 'none';
+
+
+        toolBar.toolbarButton('timeBackward','<',() => {
+            if (this.time % 100 === 0) this.time = this.time - 41;
+            else this.time = this.time - 1;
+            this.setTimeControl();
+            this.repaint();
+        }).style.display = 'none';
+        toolBar.toolbarButton('timeForward','>',() => {
+            this.time = this.time + 1;
+            if (this.time % 100 === 60) this.time = this.time + 40;
+            this.setTimeControl();
+            this.repaint();
+        }).style.display = 'none';
+        toolBar.toolbarButton('timeFastForward','>>',() => {
+            this.time = this.time + 100;
+            if (this.time >= 2400) this.time = this.time - 2400;
+            this.setTimeControl();
+            this.repaint();
+        }).style.display = 'none';
+
+*/
         this.setDateControl();
+//        this.setTimeControl();
         hidHandler.register('zoom', this.onZoom);
         hidHandler.register('hoover', this.handleHoover);
 
-        setInterval(this.repaintTimer,50);
+        setInterval(this.repaintTimer,100);
         this.repaintTimer();
         this.resize();
     }
-
-
 
     this.handleHoover = (e) => {
         let ex = e.layerX ? e.layerX : e.touches[0].clientX;
