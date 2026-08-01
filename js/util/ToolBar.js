@@ -42,6 +42,21 @@ const ToolBar = function() {
         frame.appendChild(inp);
     }
 
+    this.addTimeFrame = (id,title,fn) => {
+        let frame=this.adiv(this.toolbar,'frame_'+id,'time-pane');
+        this.adivhtml(frame,'title-frame-'+id,'id-title',title);
+        let inp=document.createElement('input');
+        inp.id=id;
+        inp.type = 'time';
+        let date = new Date();
+        inp.value = date.toISOString().substring(11,16);
+        inp.onchange = () => fn(inp.value);
+        inp.className='toolbar';
+        frame.appendChild(inp);
+        return frame;
+    }
+
+
     this.creat = function(type,id,parent,cls) {
         let ret=document.createElement(type);
         if (id) ret.id=id;

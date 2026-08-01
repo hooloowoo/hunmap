@@ -1945,7 +1945,20 @@ let railways =  {
         {id: 'SARRD',name: 'Sarród',lat:47.635257548639004,lon: 16.856564478477633},
         {id: 'FOUJL',name: 'Fertőújlak (Mekszikópuszta)',lat:47.67857668228168,lon: 16.87668214150563},
 
+        {id: 'LSTAN',name: 'Szent Anna tér',lat:48.10515467282561, lon: 20.76150569559207},
+        {id: 'LFASK',name: 'Fáskert',lat:48.10612077630489, lon: 20.748846725279204},
+        {id: 'LUDGY',name: 'Újdiósgyőr',lat: 48.105385543450296, lon: 20.729536101056482},
+        {id: 'LPERK',name: 'Perecesi kitérő',lat: 48.10450603433932, lon: 20.707992832187653},
+        {id: 'LMARB',name: 'Mártabánya (Diósgyőr)',lat: 48.107519419596144, lon:  20.686252675631135},
+        {id: 'LDORO',name: 'Dorottya utca',lat: 48.10055418012022,lon:  20.702496151806276 },
+        {id: 'LMAJL',name: 'Majláth (Diósgyőr-Majláth)',lat: 48.10991626424588,lon:  20.676144078359297},
 
+        {id: 'LPAPI',name: 'Papírgyár',lat: 48.11260764858811, lon: 20.660987785361037},
+        {id: 'LPPRS',name: 'Puskaporos',lat: 48.10540142854571,  lon: 20.636259515473967},
+
+        {id: 'LLILA',name: 'Lillafüred',lat:48.10360655546598,  lon: 20.622537828205108},
+        {id: 'LUMSA',name: 'Újmassa',lat: 48.11356378697688,lon:  20.588704011176574},
+        {id: 'LGDNA',name: 'Garadna',lat: 48.11596264828368,lon:  20.558236192570277},
 
 
         /*
@@ -1981,6 +1994,19 @@ let railways =  {
 
 
 // -------------------------------------
+
+        {from: 'LSTAN', to: 'LFASK',dateFrom:19270101,dateTo:19730101,line: []},
+        {from: 'LFASK', to: 'LUDGY',dateFrom:19250101,dateTo:19780101,line: []},
+        {from: 'LUDGY', to: 'LPERK',dateFrom:19250101,dateTo:19780101,line: []},
+        {from: 'LPERK', to: 'LMARB',dateFrom:19250101,dateTo:19780101,line: []},
+        {from: 'LMARB', to: 'LDORO',dateFrom:19250101,dateTo:20991231,line: []},
+        {from: 'LPERK', to: 'LDORO',dateFrom:19250101,dateTo:19780101,line: []},
+        {from: 'LMARB', to: 'LMAJL',dateFrom:19250101,dateTo:20991231,line: []},
+        {from: 'LMAJL', to: 'LPAPI',dateFrom:19250101,dateTo:20991231,line: []},
+        {from: 'LPAPI', to: 'LPPRS',dateFrom:19250101,dateTo:20991231,line: []},
+        {from: 'LPPRS', to: 'LLILA',dateFrom:19250101,dateTo:20991231,line: []},
+        {from: 'LLILA', to: 'LUMSA',dateFrom:19250101,dateTo:20991231,line: []},
+        {from: 'LUMSA', to: 'LGDNA',dateFrom:19250101,dateTo:20991231,line: []},
 
         {from: 'BDKEL', to: 'KOFEL',dateFrom:18840816,dateTo:29901212,line: [{lat:47.49906908939835, lon:19.098091054143982},{lat:47.490357080836574, lon:19.104082778770408},{lat:47.48815563217815, lon:19.11437930902037}]},
         {from: 'ERDFS', to: 'TARNO',dateFrom:18820101,dateTo:20991231,line: []},
@@ -2129,7 +2155,7 @@ let railways =  {
         {from: 'SARRD', to: 'FOUJL',dateFrom:18971219,dateTo:29901212,line: []},
 
 
-        {from: 'AGFLV', to: 'SPNDL',dateFrom:18650921,dateTo:20991231,line: []},
+        {from: 'AGFLV', to: 'SPNDL',dateFrom:18470820,dateTo:20991231,line: []},
         {from: 'SPNDL', to: 'SPRON',dateFrom:18650921,dateTo:20991231,line: []},
         {from: 'SPRON', to: 'HRKKH',dateFrom:18650921,dateTo:20991231,line: []},
         {from: 'HRKKH', to: 'KOPHA',dateFrom:18650921,dateTo:20991231,line: []},
@@ -2855,12 +2881,20 @@ let railways =  {
         {from: 'MCPKE', to: 'MCSJI',dateFrom:18970513,dateTo:20230801,line: []},
         {from: 'MCSJI', to: 'KOMLO',dateFrom:18970513,dateTo:20230801,line: []},
 
+
+        {from: 'GDISA', to: 'BDBER',dateFrom:20260801,dateTo:20991231,line: []},
+        {from: 'BDBER', to: 'MHRTD',dateFrom:20260801,dateTo:20991231,line: []},
+        {from: 'MHRTD', to: 'MSZEK',dateFrom:20260801,dateTo:20991231,line: []},
+        {from: 'MSZEK', to: 'MCPKE',dateFrom:20260801,dateTo:20991231,line: []},
+        {from: 'MCPKE', to: 'MCSJI',dateFrom:20260801,dateTo:20991231,line: []},
+        {from: 'MCSJI', to: 'KOMLO',dateFrom:20260801,dateTo:20991231,line: []},
+
+
         {from: 'SSZOB', to: 'NATAD',dateFrom:18900917,dateTo:20230801,line: []},
         {from: 'NATAD', to: 'NATDB',dateFrom:18900917,dateTo:19760831,line: []},
         {from: 'NATDB', to: 'SMGAT',dateFrom:18900917,dateTo:19760831,line: []},
         {from: 'SMGAT', to: 'FETPA',dateFrom:18900917,dateTo:19760831,line: []},
         {from: 'FETPA', to: 'LABOD',dateFrom:18900917,dateTo:19760831,line: []},
-        {from: 'LABOD', to: 'LABOD',dateFrom:18900917,dateTo:19760831,line: []},
         {from: 'LABOD', to: 'SMVIS',dateFrom:18900917,dateTo:19760831,line: []},
         {from: 'SMVIS', to: 'CSVIS',dateFrom:18900917,dateTo:19760831,line: []},
         {from: 'CSVIS', to: 'CVISA',dateFrom:18900917,dateTo:19760831,line: []},
@@ -3228,14 +3262,14 @@ let railways =  {
         {from: 'MNAND', to: 'MHORA',dateFrom:18960913,dateTo:20991231,line: []},
         {from: 'MHORA', to: 'SZUGY',dateFrom:18960913,dateTo:20991231,line: []},
         {from: 'SZUGY', to: 'BGYRM',dateFrom:18960913,dateTo:20991231,line: []},
-        {from: 'BGYRM', to: 'ORHAL',dateFrom:18961201,dateTo:20991231,line: []},
-        {from: 'ORHAL', to: 'HUGYG',dateFrom:18961201,dateTo:20991231,line: []},
-        {from: 'HUGYG', to: 'SZECH',dateFrom:18961201,dateTo:20991231,line: []},
-        {from: 'SZECH', to: 'LUDNY',dateFrom:18961201,dateTo:20991231,line: []},
-        {from: 'LUDNY', to: 'NSZAK',dateFrom:18961201,dateTo:20991231,line: []},
-        {from: 'NSZAK', to: 'RRPSZ',dateFrom:18961201,dateTo:20991231,line: []},
-        {from: 'RRPSZ', to: 'LITKE',dateFrom:18961201,dateTo:20991231,line: []},
-        {from: 'LITKE', to: 'IPTRC',dateFrom:18961201,dateTo:20991231,line: []},
+        {from: 'BGYRM', to: 'ORHAL',dateFrom:18961201,dateTo:20230731,line: []},
+        {from: 'ORHAL', to: 'HUGYG',dateFrom:18961201,dateTo:20230731,line: []},
+        {from: 'HUGYG', to: 'SZECH',dateFrom:18961201,dateTo:20230731,line: []},
+        {from: 'SZECH', to: 'LUDNY',dateFrom:18961201,dateTo:20230731,line: []},
+        {from: 'LUDNY', to: 'NSZAK',dateFrom:18961201,dateTo:20230731,line: []},
+        {from: 'NSZAK', to: 'RRPSZ',dateFrom:18961201,dateTo:20230731,line: []},
+        {from: 'RRPSZ', to: 'LITKE',dateFrom:18961201,dateTo:20230731,line: []},
+        {from: 'LITKE', to: 'IPTRC',dateFrom:18961201,dateTo:20230731,line: []},
 
         {from: 'HATVN', to: 'TURA',dateFrom:18670519,dateTo:29901212,line: []},
         {from: 'TURA', to: 'GLHVZ',dateFrom:18670519,dateTo:29901212,line: []},

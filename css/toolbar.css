@@ -28,6 +28,20 @@ div#toolbar .date-pane {
     cursor: pointer;
 }
 
+div#toolbar .time-pane {
+    margin: 6px 8px 4px 4px;
+    font-size: 200%;
+    background-color: #28303800;
+    text-decoration: none;
+    color: #C0FFFF;
+    height: 1.2em;
+    width: 3em;
+    display: inline-block;
+    text-align: center;
+    position: relative;
+    cursor: pointer;
+}
+
 div#toolbar .id-title {
     display: inline-block;
     background-color: #28303800;

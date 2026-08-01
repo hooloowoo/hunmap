@@ -84,6 +84,9 @@ const HidHandler = function() {
         this.callEvents("mouseup",e);
         let name = "mousedown";
         let lastEvent = this.lastEvents[name];
+        if (!lastEvent) {
+            return;
+        }
         let dist=this.calcLen({p0: {x:e.layerX,y:e.layerY}, p1: {x:lastEvent.layerX,y:lastEvent.layerY}});
         if (dist < CLICK_DISTANCE) {
             this.callEvents("click",e);
@@ -131,7 +134,13 @@ const HidHandler = function() {
         this.callEvents("touchend",e);
         let name = "touchstart";
         let lastEvent = this.lastEvents[name];
-        let dist=this.calcLen({p0: {x:e.layerX,y:e.layerY}, p1: {x:lastEvent.layerX,y:lastEvent.layerY}});
+        if (!lastEvent || !e.changedTouches || e.changedTouches.length === 0 || !lastEvent.touches || lastEvent.touches.length === 0) {
+            this.lastEvents['touchmove'] = null;
+            return;
+        }
+        let endPoint = {x: e.changedTouches[0].clientX, y: e.changedTouches[0].clientY};
+        let startPoint = {x: lastEvent.touches[0].clientX, y: lastEvent.touches[0].clientY};
+        let dist=this.calcLen({p0: endPoint, p1: startPoint});
         if (dist < CLICK_DISTANCE) {
             this.callEvents("click",e);
         }
